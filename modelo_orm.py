@@ -14,7 +14,7 @@ class BaseModel(Model):
 
 class Etapa(BaseModel):
     id_etapa = AutoField(primary_key=True)
-    nombre_etapa = CharField(unique= True, null=False)
+    nombre_etapa = TextField(unique= True, null=False)
 
     def __str__(self) -> str:
         return self.name
@@ -24,37 +24,37 @@ class Etapa(BaseModel):
 
 class Tipo(BaseModel):
     id_tipo = AutoField(primary_key=True)
-    nombre_tipo = CharField(unique= True, null=False)
+    nombre_tipo = TextField(unique= True, null=False)
 
     def __str__(self) -> str:
         return self.name
     
     class Meta:
-        db_table = "Tipo de Obra"
+        db_table = "tipo_de_obra"
 
 class AreaResponsable(BaseModel):
     id_responsable = AutoField(primary_key=True)
-    nombre_responsable = CharField(unique= True, null=False)
+    nombre_responsable = TextField(unique= True, null=False)
 
     def __str__(self) -> str:
         return self.name
     
     class Meta:
-        db_table = "Responsable de Area"
+        db_table = "responsable_de_area"
 
 class FuenteFinanciamiento(BaseModel):
     id_financiamiento = AutoField(primary_key=True)
-    nombre_financiamiento = CharField(unique= True, null=False)
+    nombre_financiamiento = TextField(unique= True, null=False)
     
     def __str__(self) -> str:
         return self.name
     
     class Meta:
-        db_table = "Fuentes de Financiamiento"
+        db_table = "fuentes_de_financiamiento"
 
 class Empresa(BaseModel):
     id_empresa = AutoField(primary_key=True)
-    nombre_empresa = CharField(unique= True, null=False)
+    nombre_empresa = TextField(unique= True, null=False)
     
     def __str__(self) -> str:
         return self.name
@@ -65,7 +65,7 @@ class Empresa(BaseModel):
 
 class Barrios(BaseModel):
     id_barrio = AutoField(primary_key=True)
-    nombre_barrio = CharField(unique= True, null=False)
+    nombre_barrio = TextField(unique= True, null=False)
     comuna_barrio = IntegerField(null = False)
     def __str__(self) -> str:
         return self.name
@@ -99,7 +99,7 @@ class Obra(BaseModel):
     fecha_fin_inicial = DateField(null=True)
     plazo_meses = IntegerField(null=True)
     porcentaje = IntegerField(null=True)
-    licitacion_oferta_empresa = ForeignKeyField(Empresa, backref= 'obras') #accedo al cuit desde la empresa
+    licitacion_oferta_empresa = ForeignKeyField(Empresa, backref= 'obras') 
     licitacion_anio = IntegerField(null=True)
     contratacion_obra = ForeignKeyField(Contratacion, backref= 'obras')
     nro_contratacion = TextField(null=True)
@@ -111,7 +111,7 @@ class Obra(BaseModel):
     plazo_meses = IntegerField()
     
     def __str__(self):
-        return f"{self.nombre}: obra {self.etapa.etapa} en {self.barrio.barrio}"
+        return f"{self.nombre}: obra {self.etapa.nombre_etapa} en {self.barrio.nombre_barrio}"
     
     class Meta:
         db_table = "obras"
