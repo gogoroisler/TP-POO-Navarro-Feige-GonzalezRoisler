@@ -2,87 +2,97 @@ from peewee import *
 
 sqlite_db = SqliteDatabase('./TP-POO-Navarro-Feige-GonzalezRoisler/obras_urbanas.db', pragmas={'journal_mode': 'wal'})
 
+"""Conexion a base de datos"""
 try:
     sqlite_db.connect()
 except OperationalError as e:
     print("Se ha generado un error en la conexion con la base de datos.", e)
     exit()
 
+"""Clase base para las entidades de la base de datos"""
 class BaseModel(Model):
     class Meta:
         database = sqlite_db
 
+"""Entidad Etapa"""
 class Etapa(BaseModel):
     id_etapa = AutoField(primary_key=True)
     nombre_etapa = TextField(unique= True, null=False)
 
     def __str__(self) -> str:
-        return self.name
+        return self.nombre_etapa
     
     class Meta:
         db_table = "Etapas"
 
+"""Entidad Tipo de obra"""
 class Tipo(BaseModel):
     id_tipo = AutoField(primary_key=True)
     nombre_tipo = TextField(unique= True, null=False)
 
     def __str__(self) -> str:
-        return self.name
+        return self.nombre_tipo
     
     class Meta:
         db_table = "tipo_de_obra"
 
+"""Entidad Responsable de Area"""
 class AreaResponsable(BaseModel):
     id_responsable = AutoField(primary_key=True)
     nombre_responsable = TextField(unique= True, null=False)
 
     def __str__(self) -> str:
-        return self.name
+        return self.nombre_responsable
     
     class Meta:
         db_table = "responsable_de_area"
 
+"""Entidad Fuente de Financiamiento"""
 class FuenteFinanciamiento(BaseModel):
     id_financiamiento = AutoField(primary_key=True)
     nombre_financiamiento = TextField(unique= True, null=False)
     
     def __str__(self) -> str:
-        return self.name
+        return self.nombre_financiamiento
     
     class Meta:
         db_table = "fuentes_de_financiamiento"
 
+"""Entidad Empresa"""
 class Empresa(BaseModel):
     id_empresa = AutoField(primary_key=True)
     nombre_empresa = TextField(unique= True, null=False)
     
     def __str__(self) -> str:
-        return self.name
-    
+        return self.nombre_empresa
+      
     class Meta:
         db_table = "Empresas"
 
-
+"""Entidad Barrios"""
 class Barrios(BaseModel):
     id_barrio = AutoField(primary_key=True)
     nombre_barrio = TextField(unique= True, null=False)
     comuna_barrio = IntegerField(null = False)
+   
     def __str__(self) -> str:
-        return self.name
+        return self.nombre_barrio
     
     class Meta:
         db_table = "Barrios"
 
+"""Entidad Contratacion"""
 class Contratacion(BaseModel):
     id_contratacion = AutoField (primary_key = True)
     contratacion = TextField(unique = True)
 
     def __str__(self) -> str:
-        return self.name
+        return self.contratacion
     
     class Meta:
         db_table = "Tipo de Contratacion"
 
+"""Entidadd Obra"""
 class Obra(BaseModel):
     id = AutoField(primary_key=True)
     nombre = TextField(null= False)
@@ -108,20 +118,20 @@ class Obra(BaseModel):
     destacada = BooleanField(default=False) 
     fuente_financiamiento = ForeignKeyField(FuenteFinanciamiento,backref="obras")
     porcentaje_avance = FloatField()
-    plazo_meses = IntegerField()
-    
-    def __str__(self):
-        return f"{self.nombre}: obra {self.etapa.nombre_etapa} en {self.barrio.nombre_barrio}"
     
     class Meta:
         db_table = "obras"
+    
+    def __str__(self):
+        return f"{self.nombre}: obra {self.etapa.nombre_etapa} en {self.barrio.nombre_barrio}"
+   
+    """Metodo Nuevo proyecto"""
+    @classmethod
+    def nuevo_proyecto(cls):        
 
-    def nuevo_proyecto():        
-
-    # Solicitar los datos del nuevo proyecto al usuario
+    # Solicitar los datos del nuevo proyecto al usuario. Si bien da la opcion, se debe ingresar Proyecto para realizarlo en funcion del requerimiento del TP
         nombre = input("Nombre del proyecto: ")
         descripcion = input("Descripción del proyecto: ")
-        # ... solicitar y capturar los demás datos del proyecto
         
         # Verificar si la etapa "Proyecto" existe en la base de datos
         etapa_proyecto = Etapa.get_or_none(nombre_etapa="Proyecto")
@@ -146,7 +156,7 @@ class Obra(BaseModel):
         barrio_existente = Barrios.get_or_none(nombre_barrio=barrio)
 
 
- # Si el tipo de obra no existe, ofrecer la opción de crearlo
+        # Opcional: Si el tipo de obra no existe, dar la opción de crearlo
         if tipo_existente is None:
             crear_tipo = input("El tipo de obra ingresado no existe. ¿Desea crearlo? (s/n): ")
             if crear_tipo.lower() == "s":
@@ -158,7 +168,7 @@ class Obra(BaseModel):
                     return
             else:
                 return        
-    # Si el área responsable no existe, ofrecer la opción de crearlo
+        # Opcional: Si el área responsable no existe, dar la opción de crearlo
         if area_responsable_existente is None:
             crear_area_responsable = input("El área responsable ingresada no existe. ¿Desea crearla? (s/n): ")
             if crear_area_responsable.lower() == "s":
@@ -171,7 +181,7 @@ class Obra(BaseModel):
             else:
                 return
         
-        # Si el barrio no existe, ofrecer la opción de crearlo
+        # Opcional: Si el barrio no existe, dar la opción de crearlo
         if barrio_existente is None:
             crear_barrio = input("El barrio ingresado no existe. ¿Desea crearlo? (s/n): ")
             if crear_barrio.lower() == "s":
@@ -190,14 +200,14 @@ class Obra(BaseModel):
             nombre=nombre,
             descripcion=descripcion,
             etapa=etapa_proyecto,
-            tipo=tipo_existente,
+            contratacion_obra=tipo_existente,
             area_responsable=area_responsable_existente,
             barrio=barrio_existente,
             porcentaje_avance=0.0,
             plazo_meses=0,
             mano_obra=0
 
-            # ... asignar los demás atributos con los datos capturados
+            
         )
         
         # Guardar el nuevo proyecto en la base de datos
@@ -207,62 +217,63 @@ class Obra(BaseModel):
         except Exception as e:
             print("Ocurrió un error al guardar el proyecto:", e)
 
-def iniciar_contratacion():
-    # Solicitar los datos de la contratación al usuario
-    tipo_contratacion = input("Tipo de contratación: ")
-    nro_contratacion = input("Número de contratación: ")
-    
-    # Verificar si el tipo de contratación existe en la base de datos
-    
-    tipo_contratacion_existente = Contratacion.get_or_none(nombre_tipo_contratacion=tipo_contratacion)
-    if tipo_contratacion_existente is None:
-        crear_tipo_contratacion = input("El tipo de contratación ingresado no existe en la base de datos. ¿Desea crearla? (s/n): ")
-        if crear_tipo_contratacion.lower() == "s":
-            try:
-                tipo_contratacion_existente = Contratacion.create(nombre_tipo_contratacion=tipo_contratacion)
-                print(f"Se ha creado el área responsable '{tipo_contratacion}'.")
-            except Exception as e:
-                print("Ocurrió un error al crear el área responsable:", e)
-                return
+    """Metodo Iniciar contratacion"""
+    def iniciar_contratacion():
+        # Solicitar los datos de la contratación al usuario
+        tipo_contratacion = input("Tipo de contratación: ")
+        nro_contratacion = input("Número de contratación: ")
+        
+        # Verificar si el tipo de contratación existe en la base de datos
+        
+        tipo_contratacion_existente = Contratacion.get_or_none(nombre_tipo_contratacion=tipo_contratacion)
+        if tipo_contratacion_existente is None:
+            crear_tipo_contratacion = input("El tipo de contratación ingresado no existe en la base de datos. ¿Desea crearla? (s/n): ")
+            if crear_tipo_contratacion.lower() == "s":
+                try:
+                    tipo_contratacion_existente = Contratacion.create(nombre_tipo_contratacion=tipo_contratacion)
+                    print(f"Se ha creado el área responsable '{tipo_contratacion}'.")
+                except Exception as e:
+                    print("Ocurrió un error al crear el área responsable:", e)
+                    return
             else:
                 return
+            
         
-    
-    # Obtener la obra más reciente de la base de datos
-    obra = Obra.select().order_by(Obra.id.desc()).first()
-    if obra is None:
-        obra_existente = input("No se encontró ninguna obra en la base de datos. ¿Desea crearla? (s/n)")
-        if obra_existente.lower()=="s":
+        # Obtener la obra más reciente de la base de datos
+        obra = Obra.select().order_by(Obra.id.desc()).first()
+        if obra is None:
+            obra_existente = input("No se encontró ninguna obra en la base de datos. ¿Desea crearla? (s/n)")
+            if obra_existente.lower()=="s":
                 try:
-                    obra.nuevo_proyecto()
+                    Obra.nuevo_proyecto()
                     print("se ha creado una obra nueva. Vuelva a intentar la contratacion")
                 except Exception as e:
                     print("Ocurrió un error al crear el área responsable:", e)
                     return
                 else:
                     return
+        
+        # Asignar los datos de contratación a la obra
+        obra.contratacion_obra= tipo_contratacion_existente
+        obra.nro_contratacion = nro_contratacion
+        
+        # Guardar los cambios en la base de datos
+        try:
+            obra.save()
+            print("Se ha iniciado la contratación de la obra exitosamente.")
+        except Exception as e:
+            print("Ocurrió un error al iniciar la contratación de la obra:", e)
     
-    # Asignar los datos de contratación a la obra
-    obra.tipo_contratacion = tipo_contratacion_existente
-    obra.nro_contratacion = nro_contratacion
-    
-    # Guardar los cambios en la base de datos
-    try:
-        obra.save()
-        print("Se ha iniciado la contratación de la obra exitosamente.")
-    except Exception as e:
-        print("Ocurrió un error al iniciar la contratación de la obra:", e)
-
+    """Metodo adjudicar obra"""
     def adjudicar_obra():
         # Solicitar los datos de la adjudicación al usuario
         nombre_empresa = input("Nombre de la empresa adjudicada: ")
         nro_expediente = input("Número de expediente: ")
         
         # Verificar si la empresa adjudicada existe en la base de datos
-        try:
-            empresa_adjudicada = Empresa.get(nombre_empresa=nombre_empresa)
-        except Empresa.DoesNotExist:
-            # Si la empresa no existe, ofrecer la opción de crearla
+        empresa_adjudicada = Empresa.get_or_none(nombre_empresa=nombre_empresa)
+        if empresa_adjudicada is None:
+            # Si la empresa no existe, dar la opción de crearla
             crear_empresa = input("La empresa adjudicada ingresada no existe. ¿Desea crearla? (s/n): ")
             if crear_empresa.lower() == "s":
                 try:
@@ -296,6 +307,7 @@ def iniciar_contratacion():
         except Exception as e:
             print("Ocurrió un error al adjudicar la obra:", e)
 
+    """Metodo iniciar obra"""
     def iniciar_obra():
         # Solicitar los datos del inicio de la obra al usuario
         destacada = input("¿Es una obra destacada? (s/n): ")
@@ -308,7 +320,7 @@ def iniciar_contratacion():
         try:
             fuente_financiamiento = FuenteFinanciamiento.get(nombre_financiamiento=nombre_fuente_financiamiento)
         except FuenteFinanciamiento.DoesNotExist:
-            # Si la fuente de financiamiento no existe, ofrecer la opción de crearla
+            # Opcional: Si la fuente de financiamiento no existe, dar la opción de crearla
             crear_fuente = input("La fuente de financiamiento ingresada no existe. ¿Desea crearla? (s/n): ")
             if crear_fuente.lower() == "s":
                 try:
@@ -345,6 +357,7 @@ def iniciar_contratacion():
         except Exception as e:
             print("Ocurrió un error al iniciar la obra:", e)
 
+    """Metodo actualizar porcentaje de avance"""
     def actualizar_porcentaje_avance():
         # Obtener la obra más reciente de la base de datos
         obra = Obra.select().order_by(Obra.id.desc()).first()
@@ -365,6 +378,7 @@ def iniciar_contratacion():
         except Exception as e:
             print("Ocurrió un error al actualizar el porcentaje de avance:", e)
 
+    """Metodo incrementar plazo"""
     def incrementar_plazo():
         # Obtener la obra más reciente de la base de datos
         obra = Obra.select().order_by(Obra.id.desc()).first()
@@ -394,6 +408,7 @@ def iniciar_contratacion():
         except Exception as e:
             print("Ocurrió un error al incrementar el plazo de la obra:", e)
 
+    """Metodo incrementar mano de obra"""
     def incrementar_mano_obra():
         # Obtener la obra más reciente de la base de datos
         obra = Obra.select().order_by(Obra.id.desc()).first()
@@ -423,6 +438,7 @@ def iniciar_contratacion():
         except Exception as e:
             print("Ocurrió un error al incrementar la cantidad de mano de obra:", e)
 
+    """Metodo finalizar obra"""
     def finalizar_obra():
         # Obtener la obra más reciente de la base de datos
         obra = Obra.select().order_by(Obra.id.desc()).first()
@@ -443,6 +459,7 @@ def iniciar_contratacion():
         except Exception as e:
             print("Ocurrió un error al finalizar la obra:", e)
 
+    """Metodo rescindir obra"""
     def rescindir_obra():
         # Obtener la obra más reciente de la base de datos
         obra = Obra.select().order_by(Obra.id.desc()).first()
