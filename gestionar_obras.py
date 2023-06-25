@@ -1,6 +1,9 @@
 import pandas as pd
 from modelo_orm import *
 from abc import ABC, abstractmethod
+import csv
+
+obra_csv = './TP-POO-Navarro-Feige-GonzalezRoisler/observatorio-de-obras-urbanas.csv'
 
 """Definicion de clase abstracta GestionarObra"""
 class GestionarObra(ABC):
