@@ -1,7 +1,7 @@
 # Trabajo Practico integrador de Programacion Orientada a Objetos (IFTS N°18)
 ### Maria Laura Fiege, Fernando Navarro y Santiago Gonzalez Roisler
-> *Tema:* Sistema de gestión de obras públicas con manejo de POO, importación de datasets desde un archivo csv y persistencia de objetos con ORM Peewee en una base de datos SQLite. Se requiere desarrollar un software en Python para gestionar las obras urbanas de la Ciudad de Buenos Aires, tomando como origen de datos un dataset público del gobierno de la ciudad y haciendo uso del modelo ORM de peewee. 
----
+*Tema:* Sistema de gestión de obras públicas con manejo de POO, importación de datasets desde un archivo csv y persistencia de objetos con ORM Peewee en una base de datos SQLite. Se requiere desarrollar un software en Python para gestionar las obras urbanas de la Ciudad de Buenos Aires, tomando como origen de datos un dataset público del gobierno de la ciudad y haciendo uso del modelo ORM de peewee. 
+
 
 ## Requerimientos funcionales y no funcionales del trabajo.
 1. En primer lugar, se debe crear una carpeta para el proyecto solución del TP, cuyo nombre debe contener el apellido de cada alumno integrante del equipo (cada apellido separado por guión).
