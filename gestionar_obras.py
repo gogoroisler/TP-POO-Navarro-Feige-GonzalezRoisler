@@ -174,3 +174,15 @@ class GestionarObra(ABC):
 
         except Exception as e:
             print("Ocurrió un error al obtener los indicadores:", e)
+
+
+if __name__=='__main__':
+    gestordeobra= GestionarObra()
+    gestordeobra.cargar_datos()
+    obra1 = gestordeobra.nueva_obra()
+    obra1.iniciar_contratacion()
+    obra1.adjudicar_obra()
+    obra1.iniciar_obra()
+    obra1.actualizar_porcentaje_avance()
+    obra1.incrementar_plazo()
+    obra1.finalizar_obra()
