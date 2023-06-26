@@ -1,7 +1,7 @@
 from peewee import *
 
 
-sqlite_db = SqliteDatabase('./TP-POO-Navarro-Feige-GonzalezRoisler/obras_urbanas.db', pragmas={'journal_mode': 'wal'})
+sqlite_db = SqliteDatabase('C:/Users/tato1/OneDrive/Escritorio/TP-POO-Navarro-Feige-GonzalezRoisler/obras_urbanas.db', pragmas={'journal_mode': 'wal'})
 
 """Conexion a base de datos"""
 try:

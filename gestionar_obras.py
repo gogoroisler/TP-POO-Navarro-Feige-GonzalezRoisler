@@ -3,7 +3,7 @@ from modelo_orm import *
 from abc import ABC, abstractmethod
 import csv
 
-obra_csv = './TP-POO-Navarro-Feige-GonzalezRoisler/observatorio-de-obras-urbanas.csv'
+obra_csv = 'C:/Users/tato1/OneDrive/Escritorio/TP-POO-Navarro-Feige-GonzalezRoisler/observatorio-de-obras-urbanas.csv'
 
 """Definicion de clase abstracta GestionarObra"""
 class GestionarObra(ABC):
@@ -12,19 +12,25 @@ class GestionarObra(ABC):
     @classmethod
     def conectar_db(cls):
         # Realizar la conexión a la base de datos
-        BaseModel.database.connect()
-        print("Conexión a la base de datos establecida.")
+        try:
+            BaseModel.database.connect()
+            print("Conexión a la base de datos establecida.")
+        except Exception as e:
+            print("Error al conectarse a la base de datos", e)
 
     """Metodo de clase mapear orm"""
     @classmethod
     def mapear_orm(cls):
         # Crear la estructura de la base de datos (tablas y relaciones)
-        BaseModel.create_tables([Obra])
-        print("Estructura de la base de datos creada.")
-   
+        try:
+            sqlite_db.create_tables([Etapa, Tipo, AreaResponsable, Barrios, Empresa, Contratacion, FuenteFinanciamiento, Obra])
+            print("Estructura de la base de datos creada.")
+        except Exception as e:
+            print("Error al crear la estructura de la base de datos",e)
+
     """Metodo de clase limpiar datos"""
     @classmethod
-    def limpiar_datos(cls, df):
+    def limpiar_datos(cls,df):
         # Eliminar filas con datos nulos o no accesibles del DataFrame
         df_clean = df.dropna()
         print("Datos limpios.")
@@ -33,7 +39,9 @@ class GestionarObra(ABC):
     
     """Metodo de clase cargar datos"""
     @classmethod
-    def cargar_datos(cls, df):
+    def cargar_datos(cls,df):
+        cls.mapear_orm()
+        
         for _, row in df.iterrows():
             nombre = row['nombre']
             ubicacion = row['ubicacion']
@@ -180,7 +188,7 @@ class GestionarObra(ABC):
 
 if __name__=='__main__':
     gestordeobra= GestionarObra()
-    gestordeobra.cargar_datos()
+    gestordeobra.extraer_datos()
     obra1 = gestordeobra.nueva_obra()
     obra1.iniciar_contratacion()
     obra1.adjudicar_obra()
