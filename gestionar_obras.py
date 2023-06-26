@@ -47,8 +47,7 @@ class GestionarObra(ABC):
     @classmethod
     def extraer_datos(cls):
         #leer dataset usando pandas
-        df = pd.read_csv("observatorio-de-obras-urbanas.csv")
-
+        df = pd.read_csv(obra_csv)
         # Limpiar los datos del dataset
         df_clean = cls.limpiar_datos(df)
 
@@ -189,3 +188,4 @@ if __name__=='__main__':
     obra1.actualizar_porcentaje_avance()
     obra1.incrementar_plazo()
     obra1.finalizar_obra()
+
